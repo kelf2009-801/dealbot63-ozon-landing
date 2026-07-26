@@ -36,6 +36,12 @@
     min-height:100vh; overflow-x:hidden;
   }
 
+  /* ===== SVG ICONS ===== */
+  .icon { width:1em; height:1em; display:inline-block; vertical-align:middle; }
+  .icon svg { width:100%; height:100%; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+  .icon-lg { width:28px; height:28px; }
+  .icon-sm { width:18px; height:18px; }
+
   /* ===== ЖИВОЙ ФОН ===== */
   .bg-orbs {
     position:fixed; inset:0; z-index:-2; pointer-events:none;
@@ -243,8 +249,8 @@
     width:52px; height:52px; border-radius:12px;
     background:linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
     border:1px solid rgba(212,175,55,0.2);
-    display:flex; align-items:center; justify-content:center; font-size:1.5rem; margin-bottom:20px;
-    transition:transform 0.3s;
+    display:flex; align-items:center; justify-content:center; margin-bottom:20px;
+    transition:transform 0.3s; color:var(--gold);
   }
   .feature-card:hover .feature-icon { transform:scale(1.1) rotate(5deg); }
   .feature-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:10px; }
@@ -310,8 +316,8 @@
   .pricing-price .currency { font-size:1.2rem; color:var(--text-dim); -webkit-text-fill-color:var(--text-dim); }
   .pricing-period { color:var(--text-dim); font-size:0.85rem; margin-bottom:24px; }
   .pricing-features { list-style:none; margin-bottom:28px; }
-  .pricing-features li { padding:6px 0; color:var(--text-dim); font-size:0.9rem; transition:color 0.2s; }
-  .pricing-features li::before { content:'✓ '; color:var(--gold); font-weight:700; }
+  .pricing-features li { padding:6px 0; color:var(--text-dim); font-size:0.9rem; transition:color 0.2s; display:flex; align-items:center; gap:8px; justify-content:center; }
+  .pricing-features li .icon { color:var(--gold); flex-shrink:0; }
   .pricing-features li:hover { color:var(--text); }
   .btn-pricing {
     display:block; width:100%; padding:12px; border-radius:8px;
@@ -365,6 +371,54 @@
 </head>
 <body>
 
+<!-- SVG ICON SPRITES -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
+  <defs>
+    <symbol id="icon-chart" viewBox="0 0 24 24">
+      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
+      <path d="m19 9-5 5-4-4-3 3" />
+    </symbol>
+    <symbol id="icon-bell" viewBox="0 0 24 24">
+      <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+      <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+    </symbol>
+    <symbol id="icon-trending-up" viewBox="0 0 24 24">
+      <path d="M16 7h6v6" />
+      <path d="m22 7-8.5 8.5-5-5L2 17" />
+    </symbol>
+    <symbol id="icon-target" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="10" />
+      <circle cx="12" cy="12" r="6" />
+      <circle cx="12" cy="12" r="2" />
+    </symbol>
+    <symbol id="icon-package" viewBox="0 0 24 24">
+      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
+      <path d="M12 22V12" />
+      <polyline points="3.29 7 12 12 20.71 7" />
+    </symbol>
+    <symbol id="icon-zap" viewBox="0 0 24 24">
+      <path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" />
+    </symbol>
+    <symbol id="icon-rocket" viewBox="0 0 24 24">
+      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
+      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09" />
+      <path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 17 5c4 0 5 2 5 2s1 4-1.5 6.5C18.5 16 16 17 13 17" />
+      <path d="M9 12a22 22 0 0 0-2 3.95A12.88 12.88 0 0 0 2 19c-1 0-2-2-2-2s-1-4 1.5-6.5C4 8 7 7 10 7" />
+    </symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24">
+      <path d="M20 6 9 17l-5-5" />
+    </symbol>
+    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
+      <path d="M5 12h14" />
+      <path d="m12 5 7 7-7 7" />
+    </symbol>
+    <symbol id="icon-send" viewBox="0 0 24 24">
+      <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
+      <path d="m21.854 2.147-10.94 10.939" />
+    </symbol>
+  </defs>
+</svg>
+
 <div class="bg-orbs"></div>
 <div class="bg-grid"></div>
 <div class="particles" id="particles"></div>
@@ -382,7 +436,8 @@
     <a href="#pricing">Тарифы</a>
   </div>
   <a href="https://t.me/DealBot63_bot?start=landing" class="btn-cta" target="_blank">
-    ⚡ Запустить
+    <span class="icon icon-sm"><svg><use href="#icon-zap"/></svg></span>
+    Запустить
   </a>
 </nav>
 
@@ -403,10 +458,12 @@
     </p>
     <div class="hero-buttons">
       <a href="https://t.me/DealBot63_bot?start=landing" class="btn-primary" target="_blank">
-        🚀 Открыть в Telegram
+        <span class="icon"><svg><use href="#icon-rocket"/></svg></span>
+        Открыть в Telegram
       </a>
       <a href="#how" class="btn-secondary">
-        Как это работает ↓
+        Как это работает
+        <span class="icon"><svg><use href="#icon-arrow-right"/></svg></span>
       </a>
     </div>
     <div class="hero-image reveal">
@@ -443,32 +500,32 @@
   </div>
   <div class="features-grid">
     <div class="feature-card reveal">
-      <div class="feature-icon">📊</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-chart"/></svg></span></div>
       <h3>Отслеживание цен</h3>
       <p>Добавьте любой товар с Ozon по ссылке — бот будет следить за ценой 24/7 и присылать уведомления.</p>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">🔔</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-bell"/></svg></span></div>
       <h3>Уведомления о скидках</h3>
       <p>Получайте push в Telegram, когда цена падает до нужного уровня. Настраивайте порог уведомления.</p>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">📈</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-trending-up"/></svg></span></div>
       <h3>История цен</h3>
       <p>График изменения цены за период. Видите, была ли цена ниже раньше, и когда выгоднее покупать.</p>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">🎯</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-target"/></svg></span></div>
       <h3>Целевая цена</h3>
       <p>Установите цену, при которой хотите купить. Бот сообщит, когда товар подешевеет до нужной отметки.</p>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">📦</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-package"/></svg></span></div>
       <h3>Список покупок</h3>
       <p>Управляйте отслеживаемыми товарами в одном месте. Добавляйте, удаляйте, группируйте по категориям.</p>
     </div>
     <div class="feature-card reveal">
-      <div class="feature-icon">⚡</div>
+      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-zap"/></svg></span></div>
       <h3>Молниеносная скорость</h3>
       <p>Парсинг цен каждые 30 минут. Уведомление приходит за 3 секунды после обнаружения скидки.</p>
     </div>
@@ -520,10 +577,10 @@
       <div class="pricing-price">0<span class="currency"> ₽</span></div>
       <div class="pricing-period">навсегда</div>
       <ul class="pricing-features">
-        <li>До 3 товаров</li>
-        <li>Проверка раз в час</li>
-        <li>Базовые уведомления</li>
-        <li>История цен 7 дней</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> До 3 товаров</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка раз в час</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Базовые уведомления</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> История цен 7 дней</li>
       </ul>
       <a href="https://t.me/DealBot63_bot?start=landing_free" class="btn-pricing outline" target="_blank">Начать бесплатно</a>
     </div>
@@ -532,12 +589,12 @@
       <div class="pricing-price">149<span class="currency"> ₽</span></div>
       <div class="pricing-period">в месяц</div>
       <ul class="pricing-features">
-        <li>Безлимит товаров</li>
-        <li>Проверка каждые 30 мин</li>
-        <li>Мгновенные уведомления</li>
-        <li>История цен 90 дней</li>
-        <li>Графики и аналитика</li>
-        <li>Целевая цена</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Безлимит товаров</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка каждые 30 мин</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Мгновенные уведомления</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> История цен 90 дней</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Графики и аналитика</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Целевая цена</li>
       </ul>
       <a href="https://t.me/DealBot63_bot?start=landing_premium" class="btn-pricing gold" target="_blank">Оформить Премиум</a>
     </div>
@@ -546,11 +603,11 @@
       <div class="pricing-price">499<span class="currency"> ₽</span></div>
       <div class="pricing-period">в месяц</div>
       <ul class="pricing-features">
-        <li>Всё из Премиум</li>
-        <li>Проверка каждые 10 мин</li>
-        <li>API доступ</li>
-        <li>Массовый импорт</li>
-        <li>Приоритетная поддержка</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Всё из Премиум</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка каждые 10 мин</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> API доступ</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Массовый импорт</li>
+        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Приоритетная поддержка</li>
       </ul>
       <a href="https://t.me/DealBot63_bot?start=landing_business" class="btn-pricing outline" target="_blank">Выбрать Бизнес</a>
     </div>
@@ -563,14 +620,15 @@
   <h2 class="reveal">Готовы <span class="gold-text">экономить</span>?</h2>
   <p class="reveal">Запустите бота за 10 секунд. Бесплатно.</p>
   <a href="https://t.me/DealBot63_bot?start=landing" class="btn-primary reveal" target="_blank">
-    🚀 Открыть в Telegram
+    <span class="icon"><svg><use href="#icon-rocket"/></svg></span>
+    Открыть в Telegram
   </a>
 </section>
 
 <!-- FOOTER -->
 <footer>
   <p>DealBot63 · Мониторинг цен Ozon · <a href="https://t.me/DealBot63_bot" target="_blank">Открыть в Telegram</a></p>
-  <p style="margin-top:8px;">Сделано с ❤️ для умных покупателей</p>
+  <p style="margin-top:8px;">Сделано с &#10084; для умных покупателей</p>
 </footer>
 
 <script>
