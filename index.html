@@ -3,702 +3,903 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DealBot63 — Мониторинг цен Ozon</title>
-<meta name="description" content="Отслеживайте цены на Ozon в реальном времени. Получайте уведомления о скидках и падении цен.">
+<title>DealBot63 — Отслеживание цен на Ozon. Экономь, а не гугли.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;425;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap');
+/* Hallmark · macrostructure: Stat-Led · tone: editorial + modern-minimal · anchor hue: ember-orange
+ * DNA-source: Sanity.io (via Refero Styles) · studied: yes · theme: custom (Deal)
+ * paper: #ffffff · accent: #ff4100 ember-orange · display: Inter (Waldenburg sub) + IBM Plex Mono
+ * axes: light / geometric-sans / warm
+ */
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  /* Бренд */
+  --color-deal: #ff4100;       /* Ember Orange — только primary CTA */
+  --color-signal: #0052ef;     /* Signal Blue — ссылки, focus (бережно) */
+  --color-plex: #19d600;       /* скидка-зелёный, статус */
 
-  :root {
-    --bg: #131421;
-    --bg-soft: #1a1c2e;
-    --bg-card: #1e2033;
-    --surface: rgba(255,255,255,0.04);
-    --surface-hover: rgba(212,175,55,0.08);
-    --border: rgba(212,175,55,0.12);
-    --border-hover: rgba(212,175,55,0.4);
-    --text: #f0f0f5;
-    --text-dim: #9b9ba8;
-    --gold: #D4AF37;
-    --gold-bright: #FFD700;
-    --gold-soft: #E8C547;
-    --gold-glow: rgba(212,175,55,0.5);
-    --success: #22c55e;
-    --mono: 'SF Mono','Cascadia Code','JetBrains Mono',monospace;
-  }
+  /* Нейтралы (система Sanity) */
+  --color-onyx: #0b0b0b;       /* primary text, dark hero bg */
+  --color-graphite: #212121;   /* elevated dark surface */
+  --color-charcoal: #353535;   /* deepest surface */
+  --color-steel: #4a4a4a;      /* tertiary text */
+  --color-mid: #797979;        /* secondary text */
+  --color-smoke: #b9b9b9;      /* borders, disabled */
+  --color-ash: #d6d6d6;        /* subtle borders */
+  --color-frost: #ededed;      /* hover bg, row separators */
+  --color-canvas: #ffffff;     /* page bg, cards */
 
-  html { scroll-behavior:smooth; }
+  /* Типографика */
+  --font-display: 'Inter', 'GT Walsheim', 'Söhne', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'JetBrains Mono', monospace;
 
-  body {
-    font-family:'Manrope','Inter',sans-serif;
-    background:var(--bg); color:var(--text); line-height:1.6;
-    min-height:100vh; overflow-x:hidden;
-  }
+  /* Scale (minor third 1.2 от 18px) */
+  --text-display: clamp(3.5rem, 8vw + 1rem, 7rem);   /* 112px */
+  --text-heading-lg: clamp(2.5rem, 5vw + 1rem, 4.5rem); /* 72px */
+  --text-heading: clamp(2.25rem, 3vw + 1rem, 3.75rem); /* 60px */
+  --text-38: clamp(1.75rem, 2vw + 0.5rem, 2.375rem);
+  --text-subheading: 2rem;     /* 32px */
+  --text-24: 1.5rem;
+  --text-body: 1.125rem;       /* 18px */
+  --text-16: 1rem;
+  --text-small: 0.875rem;
+  --text-mono-label: 0.8125rem; /* 13px IBM Plex Mono для 01-05 */
 
-  /* ===== SVG ICONS ===== */
-  .icon { width:1em; height:1em; display:inline-block; vertical-align:middle; }
-  .icon svg { width:100%; height:100%; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-  .icon-lg { width:28px; height:28px; }
-  .icon-sm { width:18px; height:18px; }
+  /* Spacing — 4px base */
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
 
-  /* ===== ЖИВОЙ ФОН ===== */
-  .bg-orbs {
-    position:fixed; inset:0; z-index:-2; pointer-events:none;
-    background:
-      radial-gradient(ellipse 60% 50% at 15% 10%, rgba(212,175,55,0.18) 0%, transparent 55%),
-      radial-gradient(ellipse 50% 40% at 85% 20%, rgba(212,175,55,0.12) 0%, transparent 55%),
-      radial-gradient(ellipse 55% 45% at 50% 85%, rgba(232,197,71,0.10) 0%, transparent 60%),
-      radial-gradient(ellipse 40% 30% at 90% 80%, rgba(212,175,55,0.08) 0%, transparent 55%),
-      linear-gradient(180deg, #131421 0%, #1a1c2e 40%, #131421 100%);
-  }
+  /* Radius */
+  --radius-img: 3px;
+  --radius-input: 3px;
+  --radius-card: 12px;
+  --radius-pill: 999px;
 
-  .bg-grid {
-    position:fixed; inset:0; z-index:-2; pointer-events:none;
-    background-image:
-      linear-gradient(rgba(212,175,55,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(212,175,55,0.04) 1px, transparent 1px);
-    background-size: 50px 50px;
-    mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%);
-    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%);
-  }
+  /* Easing */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
-  /* ===== ЧАСТИЦЫ ===== */
-  .particles { position:fixed; inset:0; z-index:-1; pointer-events:none; }
-  .particle {
-    position:absolute; border-radius:50%;
-    background:var(--gold); opacity:0.6;
-    box-shadow:0 0 8px var(--gold-glow);
-    animation: floatUp linear infinite;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(100vh) translateX(0); opacity:0; }
-    10% { opacity:0.6; }
-    90% { opacity:0.6; }
-    100% { transform: translateY(-10vh) translateX(var(--drift,0px)); opacity:0; }
-  }
+  /* Layout */
+  --max-w: 1280px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+}
 
-  /* ===== GLOW FOLLOWER ===== */
-  .glow-cursor {
-    position:fixed; width:400px; height:400px; border-radius:50%;
-    background:radial-gradient(circle, rgba(212,175,55,0.10) 0%, transparent 70%);
-    pointer-events:none; z-index:-1; transition:opacity 0.3s;
-    transform:translate(-50%,-50%);
-  }
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
-  /* ===== NAV ===== */
-  nav {
-    position:fixed; top:0; left:0; right:0; z-index:100;
-    padding:18px 40px; display:flex; justify-content:space-between; align-items:center;
-    backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
-    background:rgba(19,20,33,0.75); border-bottom:1px solid var(--border);
-    transition: all 0.3s;
-  }
-  nav.scrolled { padding:12px 40px; background:rgba(19,20,33,0.9); box-shadow:0 4px 30px rgba(212,175,55,0.05); }
-  .nav-logo { display:flex; align-items:center; gap:10px; font-weight:800; font-size:1.2rem; cursor:pointer; }
-  .nav-logo .dot {
-    width:10px; height:10px; border-radius:50%; background:var(--gold);
-    box-shadow:0 0 15px var(--gold-glow); animation:pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100%{ transform:scale(1); box-shadow:0 0 15px var(--gold-glow); } 50%{ transform:scale(1.3); box-shadow:0 0 25px var(--gold-glow); } }
-  .nav-links { display:flex; gap:30px; }
-  .nav-links a {
-    color:var(--text-dim); text-decoration:none; font-size:0.9rem; font-weight:500;
-    position:relative; transition:color 0.3s;
-  }
-  .nav-links a::after {
-    content:''; position:absolute; bottom:-4px; left:50%; width:0; height:2px;
-    background:linear-gradient(90deg, var(--gold), var(--gold-bright));
-    transition:all 0.3s; transform:translateX(-50%); border-radius:2px;
-  }
-  .nav-links a:hover { color:var(--gold); }
-  .nav-links a:hover::after { width:100%; }
+html,body{overflow-x:clip}
 
-  /* ===== BUTTONS ===== */
-  .btn-cta, .btn-primary, .btn-secondary, .btn-pricing {
-    position:relative; overflow:hidden; cursor:pointer; border:none;
-    text-decoration:none; display:inline-flex; align-items:center; justify-content:center; gap:8px;
-    transition:all 0.3s;
-  }
-  .btn-cta::before, .btn-primary::before, .btn-pricing.gold::before {
-    content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
-    background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-    transition:left 0.6s;
-  }
-  .btn-cta:hover::before, .btn-primary:hover::before, .btn-pricing.gold:hover::before { left:100%; }
+body{
+  font-family:var(--font-display);
+  background:var(--color-canvas);
+  color:var(--color-onyx);
+  line-height:1.5;
+  font-weight:425;
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+}
 
-  .btn-cta {
-    background:linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
-    color:#131421; padding:10px 24px; border-radius:8px; font-weight:700;
-    box-shadow:0 4px 20px rgba(212,175,55,0.3);
-  }
-  .btn-cta:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(212,175,55,0.6); }
+/* Selection */
+::selection{background:var(--color-deal);color:#fff}
 
-  .btn-primary {
-    background:linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 100%);
-    color:#131421; padding:16px 32px; border-radius:10px; font-weight:700; font-size:1.1rem;
-    box-shadow:0 4px 30px rgba(212,175,55,0.4);
-  }
-  .btn-primary:hover { transform:translateY(-3px); box-shadow:0 12px 40px rgba(212,175,55,0.7); }
+/* Focus ring — мгновенно, без анимации */
+a:focus-visible,button:focus-visible,input:focus-visible{
+  outline:2px solid var(--color-signal);
+  outline-offset:3px;
+  border-radius:var(--radius-pill);
+}
 
-  .btn-secondary {
-    background:var(--surface); color:var(--text); border:1px solid var(--border);
-    padding:16px 32px; border-radius:10px; font-weight:600; font-size:1.1rem;
-  }
-  .btn-secondary:hover { border-color:var(--border-hover); background:var(--surface-hover); color:var(--gold); transform:translateY(-2px); }
+/* Layout */
+.wrap{max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter)}
+.section{padding:var(--space-4xl) 0}
+.section--tight{padding:var(--space-3xl) 0}
 
-  /* ===== HERO ===== */
-  .hero {
-    min-height:100vh; display:flex; align-items:center; justify-content:center;
-    padding:120px 40px 60px; position:relative;
-  }
-  .hero-content { max-width:1200px; width:100%; text-align:center; }
-  .hero-badge {
-    display:inline-flex; align-items:center; gap:8px;
-    background:var(--surface); border:1px solid var(--border);
-    padding:6px 16px; border-radius:100px; font-size:0.85rem; color:var(--gold);
-    margin-bottom:24px; backdrop-filter:blur(10px);
-    animation: badgePulse 3s infinite;
-  }
-  @keyframes badgePulse { 0%,100%{ box-shadow:0 0 0 rgba(212,175,55,0); } 50%{ box-shadow:0 0 20px rgba(212,175,55,0.2); } }
-  .hero-badge .pulse { width:8px; height:8px; border-radius:50%; background:var(--success); animation:pulse 2s infinite; }
-  .hero h1 {
-    font-size:clamp(2.5rem, 5vw, 4.5rem); font-weight:800; line-height:1.1;
-    margin-bottom:20px; letter-spacing:-0.02em;
-  }
-  .hero h1 .gold-text {
-    background:linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold-soft) 100%);
-    -webkit-background-clip:text; background-clip:text;
-    -webkit-text-fill-color:transparent;
-    animation: shimmer 3s infinite;
-  }
-  @keyframes shimmer { 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.2); } }
-  .hero p { font-size:1.2rem; color:var(--text-dim); max-width:600px; margin:0 auto 40px; }
-  .hero-buttons { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+/* Mono label — 01, 02... */
+.mono-label{
+  font-family:var(--font-mono);
+  font-size:var(--text-mono-label);
+  font-weight:500;
+  color:var(--color-mid);
+  letter-spacing:0.04em;
+  display:block;
+  margin-bottom:var(--space-md);
+}
 
-  .hero-image {
-    margin-top:60px; border-radius:16px; overflow:hidden;
-    border:1px solid var(--border);
-    box-shadow:0 20px 80px rgba(0,0,0,0.4), 0 0 60px rgba(212,175,55,0.15);
-    animation: floatIn 1s ease; position:relative;
-  }
-  .hero-image::before {
-    content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
-    background:linear-gradient(135deg, rgba(212,175,55,0.05), transparent 50%, rgba(212,175,55,0.05));
-  }
-  @keyframes floatIn { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
-  .hero-image img { width:100%; display:block; }
+/* === NAV (N1b canonical SaaS) === */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(255,255,255,0.85);
+  backdrop-filter:saturate(180%) blur(12px);
+  -webkit-backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--color-frost);
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-md) var(--gutter);
+  max-width:var(--max-w);margin:0 auto;
+  gap:var(--space-lg);
+}
+.brand{
+  display:flex;align-items:center;gap:var(--space-xs);
+  font-weight:600;font-size:1.0625rem;
+  text-decoration:none;color:var(--color-onyx);
+  letter-spacing:-0.01em;
+}
+.brand-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--color-deal);
+  display:inline-block;
+}
+.nav-links{display:flex;align-items:center;gap:var(--space-xl);list-style:none}
+.nav-links a{
+  text-decoration:none;color:var(--color-steel);
+  font-size:0.9375rem;font-weight:425;
+  transition:color .2s var(--ease-out);
+}
+.nav-links a:hover{color:var(--color-onyx)}
+.nav-cta{
+  background:var(--color-onyx);color:#fff;
+  padding:10px 20px;border-radius:var(--radius-pill);
+  text-decoration:none;font-size:0.875rem;font-weight:500;
+  border:none;cursor:pointer;
+  transition:background .2s var(--ease-out);
+  display:inline-block;
+}
+.nav-cta:hover{background:var(--color-deal)}
+.nav-burger{display:none;background:none;border:none;cursor:pointer;padding:var(--space-xs)}
+.nav-burger span{display:block;width:22px;height:2px;background:var(--color-onyx);margin:4px 0;border-radius:1px}
 
-  /* ===== STATS ===== */
-  .stats {
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
-    gap:24px; max-width:900px; margin:0 auto 80px; padding:0 40px;
-  }
-  .stat {
-    text-align:center; padding:28px 20px; background:var(--bg-card);
-    border:1px solid var(--border); border-radius:16px;
-    transition:all 0.3s; position:relative; overflow:hidden;
-  }
-  .stat::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), var(--gold), transparent);
-    opacity:0; transition:opacity 0.3s;
-  }
-  .stat:hover { border-color:var(--border-hover); transform:translateY(-4px); box-shadow:0 10px 40px rgba(212,175,55,0.15); }
-  .stat:hover::before { opacity:1; }
-  .stat-num {
-    font-size:2.8rem; font-weight:800;
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    -webkit-background-clip:text; background-clip:text;
-    -webkit-text-fill-color:transparent;
-    font-family:var(--mono); text-shadow:0 0 30px rgba(212,175,55,0.3);
-  }
-  .stat-label { color:var(--text-dim); font-size:0.9rem; margin-top:6px; }
+@media(max-width:880px){
+  .nav-links{display:none}
+  .nav-burger{display:block}
+  .nav-cta{padding:8px 16px;font-size:0.8125rem}
+}
 
-  /* ===== FEATURES ===== */
-  .section { padding:80px 40px; max-width:1200px; margin:0 auto; }
-  .section-title { text-align:center; margin-bottom:60px; }
-  .section-title h2 { font-size:clamp(1.8rem, 3vw, 2.8rem); font-weight:700; margin-bottom:12px; }
-  .section-title h2 .gold-text {
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  }
-  .section-title p { color:var(--text-dim); font-size:1.1rem; }
+/* === HERO (dark, одна оранжевая CTA) === */
+.hero{
+  background:var(--color-onyx);
+  color:#fff;
+  padding:var(--space-4xl) 0 var(--space-3xl);
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:"";position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 75% 30%, rgba(255,65,0,0.08), transparent 50%),
+    radial-gradient(circle at 20% 80%, rgba(0,82,239,0.05), transparent 55%);
+  pointer-events:none;
+}
+.hero-inner{position:relative;max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter)}
+.hero-eyebrow{
+  font-family:var(--font-mono);
+  font-size:var(--text-mono-label);
+  color:var(--color-smoke);
+  letter-spacing:0.06em;
+  margin-bottom:var(--space-lg);
+  display:flex;align-items:center;gap:var(--space-sm);
+}
+.hero-eyebrow::before{
+  content:"";width:24px;height:1px;background:var(--color-deal);
+}
+.hero h1{
+  font-size:var(--text-display);
+  font-weight:600;
+  line-height:1;
+  letter-spacing:-0.04em;
+  margin-bottom:var(--space-lg);
+  max-width:14ch;
+}
+.hero h1 .morph{
+  color:var(--color-deal);
+  display:inline-block;
+  min-width:9ch;
+  position:relative;
+}
+.hero-sub{
+  font-size:clamp(1.0625rem, 1.5vw, 1.25rem);
+  color:var(--color-smoke);
+  max-width:48ch;
+  margin-bottom:var(--space-2xl);
+  line-height:1.6;
+  font-weight:425;
+}
+.hero-cta-row{
+  display:flex;gap:var(--space-sm);align-items:center;flex-wrap:wrap;
+}
+.btn-primary{
+  background:var(--color-deal);color:#fff;
+  padding:14px 28px;border-radius:var(--radius-pill);
+  text-decoration:none;font-weight:500;font-size:1rem;
+  border:none;cursor:pointer;
+  transition:transform .2s var(--ease-out),background .2s var(--ease-out);
+  display:inline-flex;align-items:center;gap:var(--space-xs);
+}
+.btn-primary:hover{background:#e63a00;transform:translateY(-1px)}
+.btn-ghost{
+  background:transparent;color:#fff;
+  padding:14px 28px;border-radius:var(--radius-pill);
+  text-decoration:none;font-weight:425;font-size:1rem;
+  border:1px solid rgba(255,255,255,0.15);
+  transition:border-color .2s var(--ease-out),background .2s var(--ease-out);
+  display:inline-flex;align-items:center;gap:var(--space-xs);
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.4);background:rgba(255,255,255,0.03)}
 
-  .features-grid {
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px;
-  }
-  .feature-card {
-    background:var(--bg-card); border:1px solid var(--border); border-radius:16px;
-    padding:32px; transition:all 0.4s; position:relative; overflow:hidden;
-  }
-  .feature-card::before {
-    content:''; position:absolute; top:0; left:0; right:0; height:2px;
-    background:linear-gradient(90deg, transparent, var(--gold), var(--gold-bright), var(--gold), transparent);
-    transform:translateX(-100%); transition:transform 0.5s;
-  }
-  .feature-card::after {
-    content:''; position:absolute; inset:0; border-radius:16px; pointer-events:none;
-    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(212,175,55,0.08), transparent 50%);
-    opacity:0; transition:opacity 0.3s;
-  }
-  .feature-card:hover { border-color:var(--border-hover); transform:translateY(-6px); box-shadow:0 15px 50px rgba(212,175,55,0.15); }
-  .feature-card:hover::before { transform:translateX(100%); }
-  .feature-card:hover::after { opacity:1; }
-  .feature-icon {
-    width:52px; height:52px; border-radius:12px;
-    background:linear-gradient(135deg, rgba(212,175,55,0.2), rgba(212,175,55,0.05));
-    border:1px solid rgba(212,175,55,0.2);
-    display:flex; align-items:center; justify-content:center; margin-bottom:20px;
-    transition:transform 0.3s; color:var(--gold);
-  }
-  .feature-card:hover .feature-icon { transform:scale(1.1) rotate(5deg); }
-  .feature-card h3 { font-size:1.2rem; font-weight:700; margin-bottom:10px; }
-  .feature-card p { color:var(--text-dim); font-size:0.95rem; }
+.hero-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:var(--color-deal);
+  margin-left:4px;vertical-align:middle;
+  animation:blink 1s steps(2) infinite;
+}
+@keyframes blink{50%{opacity:0}}
 
-  /* ===== HOW IT WORKS ===== */
-  .steps {
-    display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:32px;
-    max-width:1000px; margin:0 auto;
-  }
-  .step { text-align:center; position:relative; }
-  .step-num {
-    width:56px; height:56px; border-radius:50%;
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    color:#131421; font-weight:800; font-size:1.3rem;
-    display:flex; align-items:center; justify-content:center; margin:0 auto 20px;
-    box-shadow:0 4px 20px rgba(212,175,55,0.3);
-    transition:all 0.3s; position:relative;
-  }
-  .step-num::after {
-    content:''; position:absolute; inset:-4px; border-radius:50%;
-    border:2px solid var(--gold); opacity:0;
-    animation: ringPulse 2s infinite;
-  }
-  @keyframes ringPulse { 0%{ transform:scale(1); opacity:0.5; } 100%{ transform:scale(1.5); opacity:0; } }
-  .step:hover .step-num { transform:scale(1.1); box-shadow:0 8px 30px rgba(212,175,55,0.5); }
-  .step h3 { font-size:1.1rem; margin-bottom:8px; }
-  .step p { color:var(--text-dim); font-size:0.9rem; }
+@media(max-width:640px){
+  .hero h1{font-size:clamp(2.5rem, 12vw, 4rem)}
+  .hero-sub{font-size:1rem}
+  .btn-primary,.btn-ghost{padding:12px 22px;font-size:0.9375rem}
+}
 
-  /* ===== PREVIEW ===== */
-  .preview-section { padding:80px 40px; max-width:900px; margin:0 auto; text-align:center; }
-  .preview-section img {
-    border-radius:16px; border:1px solid var(--border);
-    box-shadow:0 20px 80px rgba(0,0,0,0.4), 0 0 40px rgba(212,175,55,0.1);
-    max-width:300px; width:100%; transition:all 0.4s;
-  }
-  .preview-section img:hover { transform:scale(1.02); box-shadow:0 25px 90px rgba(0,0,0,0.5), 0 0 60px rgba(212,175,55,0.2); }
+/* === TRUST BAR === */
+.trust{
+  background:var(--color-canvas);
+  border-bottom:1px solid var(--color-frost);
+  padding:var(--space-xl) 0;
+}
+.trust-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:var(--space-xl);flex-wrap:wrap;
+  max-width:var(--max-w);margin:0 auto;padding:0 var(--gutter);
+}
+.trust-label{
+  font-family:var(--font-mono);
+  font-size:0.75rem;color:var(--color-mid);
+  letter-spacing:0.05em;
+}
+.trust-items{
+  display:flex;gap:var(--space-2xl);flex-wrap:wrap;
+  font-size:0.875rem;color:var(--color-steel);font-weight:500;
+}
 
-  /* ===== PRICING ===== */
-  .pricing-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:24px; max-width:1000px; margin:0 auto; }
-  .pricing-card {
-    background:var(--bg-card); border:1px solid var(--border); border-radius:16px;
-    padding:32px; text-align:center; transition:all 0.4s; position:relative;
-  }
-  .pricing-card.featured {
-    border-color:var(--gold);
-    box-shadow:0 0 50px rgba(212,175,55,0.2);
-    background:linear-gradient(135deg, var(--bg-card), rgba(212,175,55,0.05));
-  }
-  .pricing-card.featured::after {
-    content:'ПОПУЛЯРНЫЙ'; position:absolute; top:-12px; left:50%; transform:translateX(-50%);
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    color:#131421; padding:4px 16px; border-radius:100px; font-size:0.75rem; font-weight:700;
-    box-shadow:0 4px 15px rgba(212,175,55,0.4);
-  }
-  .pricing-card:hover { transform:translateY(-6px); border-color:var(--border-hover); box-shadow:0 15px 50px rgba(212,175,55,0.15); }
-  .pricing-name { font-size:1.1rem; font-weight:600; color:var(--text-dim); margin-bottom:8px; }
-  .pricing-price {
-    font-size:2.5rem; font-weight:800; margin-bottom:4px;
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  }
-  .pricing-price .currency { font-size:1.2rem; color:var(--text-dim); -webkit-text-fill-color:var(--text-dim); }
-  .pricing-period { color:var(--text-dim); font-size:0.85rem; margin-bottom:24px; }
-  .pricing-features { list-style:none; margin-bottom:28px; }
-  .pricing-features li { padding:6px 0; color:var(--text-dim); font-size:0.9rem; transition:color 0.2s; display:flex; align-items:center; gap:8px; justify-content:center; }
-  .pricing-features li .icon { color:var(--gold); flex-shrink:0; }
-  .pricing-features li:hover { color:var(--text); }
-  .btn-pricing {
-    display:block; width:100%; padding:12px; border-radius:8px;
-    font-weight:700; transition:all 0.3s; text-align:center;
-  }
-  .btn-pricing.gold {
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright));
-    color:#131421; box-shadow:0 4px 20px rgba(212,175,55,0.3);
-  }
-  .btn-pricing.outline {
-    background:var(--surface); color:var(--text); border:1px solid var(--border);
-  }
-  .btn-pricing:hover { transform:translateY(-2px); }
-  .btn-pricing.gold:hover { box-shadow:0 8px 30px rgba(212,175,55,0.5); }
-  .btn-pricing.outline:hover { border-color:var(--border-hover); background:var(--surface-hover); color:var(--gold); }
+/* === STATS (Stat-Led ядро) === */
+.stats{background:var(--color-canvas)}
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  gap:var(--space-2xl) var(--space-xl);
+  margin-top:var(--space-2xl);
+}
+.stat{}
+.stat-num{
+  font-size:clamp(3rem, 6vw, 4.5rem);
+  font-weight:600;
+  line-height:1;
+  letter-spacing:-0.03em;
+  color:var(--color-onyx);
+  display:block;
+}
+.stat-num .suffix{color:var(--color-deal);font-weight:500}
+.stat-num .rub{color:var(--color-mid);font-size:0.5em;font-weight:425;margin-left:0.1em}
+.stat-label{
+  font-family:var(--font-mono);
+  font-size:0.8125rem;color:var(--color-mid);
+  letter-spacing:0.04em;
+  margin-top:var(--space-sm);
+  display:block;
+  max-width:28ch;line-height:1.5;
+}
+.stat-divider{
+  height:1px;background:var(--color-frost);
+  margin:var(--space-2xl) 0;
+}
 
-  /* ===== CTA FINAL ===== */
-  .cta-final {
-    padding:100px 40px; text-align:center; position:relative;
-  }
-  .cta-final h2 { font-size:clamp(2rem, 4vw, 3.5rem); font-weight:800; margin-bottom:16px; }
-  .cta-final h2 .gold-text {
-    background:linear-gradient(135deg, var(--gold), var(--gold-bright), var(--gold-soft));
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  }
-  .cta-final p { color:var(--text-dim); font-size:1.2rem; margin-bottom:40px; }
-  .cta-final .btn-primary { font-size:1.3rem; padding:20px 40px; }
+/* === SECTION HEAD === */
+.section-head{
+  max-width:42ch;margin-bottom:var(--space-3xl);
+}
+.section-head h2{
+  font-size:var(--text-heading);
+  font-weight:600;
+  line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:var(--space-md);
+}
+.section-head p{
+  font-size:1.0625rem;color:var(--color-mid);line-height:1.6;
+}
 
-  /* ===== FOOTER ===== */
-  footer {
-    padding:40px; text-align:center; border-top:1px solid var(--border);
-    color:var(--text-dim); font-size:0.85rem;
-  }
-  footer a { color:var(--gold); text-decoration:none; transition:all 0.2s; }
-  footer a:hover { text-shadow:0 0 10px var(--gold-glow); }
+/* === FEATURES === */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));
+  gap:var(--space-xl);
+}
+.feature-card{
+  background:var(--color-canvas);
+  border:1px solid var(--color-frost);
+  border-radius:var(--radius-card);
+  padding:var(--space-lg);
+  transition:border-color .25s var(--ease-out),transform .25s var(--ease-out);
+}
+.feature-card:hover{
+  border-color:var(--color-ash);
+  transform:translateY(-2px);
+}
+.feature-num{
+  font-family:var(--font-mono);
+  font-size:var(--text-mono-label);
+  color:var(--color-deal);
+  font-weight:500;
+  margin-bottom:var(--space-md);
+  display:block;
+}
+.feature-card h3{
+  font-size:1.375rem;font-weight:600;
+  letter-spacing:-0.01em;
+  margin-bottom:var(--space-sm);
+  line-height:1.2;
+}
+.feature-card p{
+  font-size:0.9375rem;color:var(--color-mid);line-height:1.6;
+}
+.feature-tag{
+  display:inline-block;
+  font-family:var(--font-mono);font-size:0.6875rem;
+  padding:3px 10px;border-radius:var(--radius-pill);
+  background:var(--color-frost);color:var(--color-steel);
+  letter-spacing:0.04em;margin-top:var(--space-md);
+}
 
-  /* ===== SCROLL REVEAL ===== */
-  .reveal { opacity:0; transform:translateY(30px); transition:all 0.8s ease; }
-  .reveal.visible { opacity:1; transform:translateY(0); }
+/* === HOW IT WORKS (нумерованные шаги) === */
+.how{background:var(--color-onyx);color:#fff}
+.how .section-head h2{color:#fff}
+.how .section-head p{color:var(--color-smoke)}
+.how .mono-label{color:var(--color-smoke)}
+.steps{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));
+  gap:var(--space-2xl);
+  margin-top:var(--space-2xl);
+}
+.step{position:relative;padding-left:var(--space-2xl)}
+.step-num{
+  font-family:var(--font-mono);
+  font-size:var(--text-38);font-weight:500;
+  color:var(--color-deal);
+  line-height:1;letter-spacing:-0.02em;
+  position:absolute;left:0;top:0;
+}
+.step h3{
+  font-size:1.25rem;font-weight:600;
+  letter-spacing:-0.01em;margin-bottom:var(--space-sm);
+  line-height:1.3;
+}
+.step p{font-size:0.9375rem;color:var(--color-smoke);line-height:1.6}
 
-  /* ===== RESPONSIVE ===== */
-  @media (max-width:768px) {
-    nav { padding:14px 20px; }
-    .nav-links { display:none; }
-    .hero { padding:100px 20px 40px; }
-    .section { padding:60px 20px; }
-    .hero-buttons { flex-direction:column; align-items:center; }
-    .btn-primary, .btn-secondary { width:100%; max-width:320px; justify-content:center; }
+/* === PRICING === */
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));
+  gap:var(--space-lg);
+  margin-top:var(--space-2xl);
+}
+.price-card{
+  background:var(--color-canvas);
+  border:1px solid var(--color-frost);
+  border-radius:var(--radius-card);
+  padding:var(--space-2xl) var(--space-lg);
+  display:flex;flex-direction:column;
+  transition:transform .25s var(--ease-out);
+}
+.price-card:hover{transform:translateY(-3px)}
+.price-card--featured{
+  border-color:var(--color-deal);
+  background:#fff;
+  position:relative;
+}
+.price-card--featured::before{
+  content:"Популярный";
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--color-deal);color:#fff;
+  font-family:var(--font-mono);font-size:0.6875rem;font-weight:500;
+  padding:4px 14px;border-radius:var(--radius-pill);
+  letter-spacing:0.04em;
+}
+.price-tier{
+  font-family:var(--font-mono);font-size:0.8125rem;
+  color:var(--color-mid);letter-spacing:0.04em;
+  margin-bottom:var(--space-sm);
+}
+.price-amount{
+  font-size:2.5rem;font-weight:600;letter-spacing:-0.02em;
+  line-height:1;margin-bottom:var(--space-xs);
+}
+.price-amount .period{font-size:1rem;color:var(--color-mid);font-weight:425}
+.price-desc{
+  font-size:0.9375rem;color:var(--color-mid);
+  margin-bottom:var(--space-xl);line-height:1.5;
+}
+.price-features{list-style:none;margin-bottom:var(--space-xl);flex:1}
+.price-features li{
+  font-size:0.9375rem;color:var(--color-steel);
+  padding:var(--space-xs) 0;
+  border-bottom:1px solid var(--color-frost);
+  display:flex;align-items:flex-start;gap:var(--space-sm);
+  line-height:1.5;
+}
+.price-features li::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+  background:var(--color-deal);
+  margin-top:8px;flex-shrink:0;
+}
+.price-cta{
+  display:block;text-align:center;
+  padding:12px 24px;border-radius:var(--radius-pill);
+  text-decoration:none;font-weight:500;font-size:0.9375rem;
+  transition:background .2s var(--ease-out);
+}
+.price-card--featured .price-cta{background:var(--color-deal);color:#fff}
+.price-card--featured .price-cta:hover{background:#e63a00}
+.price-card:not(.price-card--featured) .price-cta{
+  background:var(--color-onyx);color:#fff;
+}
+.price-card:not(.price-card--featured) .price-cta:hover{background:var(--color-deal)}
+
+/* === TESTIMONIAL === */
+.testimonial{
+  background:var(--color-canvas);
+  border-top:1px solid var(--color-frost);
+}
+.quote{
+  font-size:clamp(1.5rem, 3vw, 2.25rem);
+  font-weight:425;line-height:1.35;
+  letter-spacing:-0.01em;
+  max-width:24ch;
+  color:var(--color-onyx);
+  margin-bottom:var(--space-xl);
+}
+.quote .accent{color:var(--color-deal)}
+.quote-author{
+  display:flex;align-items:center;gap:var(--space-md);
+}
+.quote-avatar{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--color-frost);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-mono);font-size:0.9375rem;font-weight:500;
+  color:var(--color-steel);
+}
+.quote-meta{font-size:0.875rem;line-height:1.4}
+.quote-meta strong{display:block;color:var(--color-onyx);font-weight:600}
+.quote-meta span{color:var(--color-mid)}
+
+/* === CTA === */
+.cta-final{
+  background:var(--color-onyx);color:#fff;
+  text-align:center;
+}
+.cta-final h2{
+  font-size:var(--text-heading-lg);
+  font-weight:600;line-height:1.05;
+  letter-spacing:-0.02em;
+  margin-bottom:var(--space-lg);
+  max-width:16ch;margin-left:auto;margin-right:auto;
+}
+.cta-final p{color:var(--color-smoke);margin-bottom:var(--space-2xl);font-size:1.0625rem}
+.cta-final .btn-primary{font-size:1.0625rem;padding:16px 32px}
+
+/* === FOOTER (Ft3 — 4 колонки) === */
+.footer{
+  background:var(--color-onyx);color:var(--color-smoke);
+  padding:var(--space-3xl) 0 var(--space-xl);
+  border-top:1px solid rgba(255,255,255,0.06);
+}
+.footer-grid{
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr 1fr;
+  gap:var(--space-2xl);
+  margin-bottom:var(--space-2xl);
+}
+.footer-brand{max-width:32ch}
+.footer-brand p{font-size:0.875rem;color:var(--color-mid);line-height:1.6;margin-top:var(--space-sm)}
+.footer-col h4{
+  font-family:var(--font-mono);font-size:0.75rem;font-weight:500;
+  color:var(--color-smoke);letter-spacing:0.05em;
+  margin-bottom:var(--space-md);text-transform:uppercase;
+}
+.footer-col ul{list-style:none}
+.footer-col li{margin-bottom:var(--space-xs)}
+.footer-col a{
+  color:var(--color-mid);text-decoration:none;
+  font-size:0.875rem;transition:color .2s var(--ease-out);
+}
+.footer-col a:hover{color:#fff}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,0.06);
+  padding-top:var(--space-lg);
+  display:flex;justify-content:space-between;align-items:center;
+  flex-wrap:wrap;gap:var(--space-sm);
+}
+.footer-bottom p{font-size:0.8125rem;color:var(--color-mid);font-family:var(--font-mono)}
+.footer-bottom .brand-dot{background:var(--color-deal)}
+
+@media(max-width:880px){
+  .footer-grid{grid-template-columns:1fr 1fr;gap:var(--space-xl)}
+  .footer-brand{grid-column:1/-1}
+}
+@media(max-width:480px){
+  .footer-grid{grid-template-columns:1fr}
+}
+
+/* === SCROLL REVEAL === */
+.reveal{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .6s var(--ease-out),transform .6s var(--ease-out);
+}
+.reveal.in{opacity:1;transform:none}
+.reveal-stagger > *{opacity:0;transform:translateY(20px);transition:opacity .6s var(--ease-out),transform .6s var(--ease-out)}
+.reveal-stagger.in > *{opacity:1;transform:none}
+.reveal-stagger.in > *:nth-child(1){transition-delay:0s}
+.reveal-stagger.in > *:nth-child(2){transition-delay:.08s}
+.reveal-stagger.in > *:nth-child(3){transition-delay:.16s}
+.reveal-stagger.in > *:nth-child(4){transition-delay:.24s}
+.reveal-stagger.in > *:nth-child(5){transition-delay:.32s}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:.01ms !important;
+    transition-duration:.01ms !important;
   }
+  .reveal,.reveal-stagger > *{opacity:1 !important;transform:none !important}
+}
 </style>
 </head>
 <body>
 
-<!-- SVG ICON SPRITES -->
-<svg xmlns="http://www.w3.org/2000/svg" style="display:none;">
-  <defs>
-    <symbol id="icon-chart" viewBox="0 0 24 24">
-      <path d="M3 3v16a2 2 0 0 0 2 2h16" />
-      <path d="m19 9-5 5-4-4-3 3" />
-    </symbol>
-    <symbol id="icon-bell" viewBox="0 0 24 24">
-      <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-      <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
-    </symbol>
-    <symbol id="icon-trending-up" viewBox="0 0 24 24">
-      <path d="M16 7h6v6" />
-      <path d="m22 7-8.5 8.5-5-5L2 17" />
-    </symbol>
-    <symbol id="icon-target" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="6" />
-      <circle cx="12" cy="12" r="2" />
-    </symbol>
-    <symbol id="icon-package" viewBox="0 0 24 24">
-      <path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
-      <path d="M12 22V12" />
-      <polyline points="3.29 7 12 12 20.71 7" />
-    </symbol>
-    <symbol id="icon-zap" viewBox="0 0 24 24">
-      <path d="M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z" />
-    </symbol>
-    <symbol id="icon-rocket" viewBox="0 0 24 24">
-      <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5" />
-      <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09" />
-      <path d="M9 12a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 17 5c4 0 5 2 5 2s1 4-1.5 6.5C18.5 16 16 17 13 17" />
-      <path d="M9 12a22 22 0 0 0-2 3.95A12.88 12.88 0 0 0 2 19c-1 0-2-2-2-2s-1-4 1.5-6.5C4 8 7 7 10 7" />
-    </symbol>
-    <symbol id="icon-check" viewBox="0 0 24 24">
-      <path d="M20 6 9 17l-5-5" />
-    </symbol>
-    <symbol id="icon-arrow-right" viewBox="0 0 24 24">
-      <path d="M5 12h14" />
-      <path d="m12 5 7 7-7 7" />
-    </symbol>
-    <symbol id="icon-send" viewBox="0 0 24 24">
-      <path d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
-      <path d="m21.854 2.147-10.94 10.939" />
-    </symbol>
-  </defs>
-</svg>
-
-<div class="bg-orbs"></div>
-<div class="bg-grid"></div>
-<div class="particles" id="particles"></div>
-<div class="glow-cursor" id="glowCursor"></div>
-
 <!-- NAV -->
-<nav id="nav">
-  <div class="nav-logo">
-    <span class="dot"></span>
-    DealBot63
+<nav class="nav" aria-label="Главная навигация">
+  <div class="nav-inner">
+    <a href="#" class="brand">
+      <span class="brand-dot" aria-hidden="true"></span>
+      <span>DealBot63</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#how">Как работает</a></li>
+      <li><a href="#features">Возможности</a></li>
+      <li><a href="#pricing">Тарифы</a></li>
+      <li><a href="#faq">Вопросы</a></li>
+    </ul>
+    <a href="https://t.me/DealBot63_bot" class="nav-cta">Открыть в Telegram</a>
+    <button class="nav-burger" aria-label="Меню"><span></span><span></span><span></span></button>
   </div>
-  <div class="nav-links">
-    <a href="#features">Возможности</a>
-    <a href="#how">Как работает</a>
-    <a href="#pricing">Тарифы</a>
-  </div>
-  <a href="https://t.me/DealBot63_bot?start=landing" class="btn-cta" target="_blank">
-    <span class="icon icon-sm"><svg><use href="#icon-zap"/></svg></span>
-    Запустить
-  </a>
 </nav>
 
 <!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="pulse"></span>
-      Мониторинг цен Ozon в реальном времени
-    </div>
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">01 / Слежение за ценами</div>
     <h1>
-      Не упусти <span class="gold-text">выгодную цену</span><br>
-      на Ozon
+      Цена падает —<br>
+      ты <span class="morph" id="morph">экономишь</span><span class="hero-cursor" aria-hidden="true"></span>
     </h1>
-    <p>
-      Отслеживайте цены любых товаров. Получайте уведомления,
-      когда цена падает. Экономьте на покупках автоматически.
+    <p class="hero-sub">
+      Кидай ссылку на товар с Ozon — бот запомнит цену и пришлёт уведомление, когда она упадёт.
+      Без приложений, без регистрации. Прямо в Telegram.
     </p>
-    <div class="hero-buttons">
-      <a href="https://t.me/DealBot63_bot?start=landing" class="btn-primary" target="_blank">
-        <span class="icon"><svg><use href="#icon-rocket"/></svg></span>
-        Открыть в Telegram
+    <div class="hero-cta-row">
+      <a href="https://t.me/DealBot63_bot" class="btn-primary">
+        Начать экономить →
       </a>
-      <a href="#how" class="btn-secondary">
-        Как это работает
-        <span class="icon"><svg><use href="#icon-arrow-right"/></svg></span>
-      </a>
+      <a href="#how" class="btn-ghost">Как это работает</a>
     </div>
-    <div class="hero-image reveal">
-      <img src="assets/dashboard.png" alt="Dashboard мониторинга цен Ozon">
+  </div>
+</header>
+
+<!-- TRUST BAR -->
+<section class="trust">
+  <div class="trust-inner">
+    <span class="trust-label">Работает с</span>
+    <div class="trust-items">
+      <span>Ozon.ru</span>
+      <span>Telegram</span>
+      <span>iOS / Android / Web</span>
     </div>
   </div>
 </section>
 
 <!-- STATS -->
-<div class="stats">
-  <div class="stat reveal">
-    <div class="stat-num" data-target="247" data-suffix="">0</div>
-    <div class="stat-label">товаров отслеживается</div>
+<section class="section stats" id="stats">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="mono-label">02 / В цифрах</span>
+      <h2>Не слова — числа</h2>
+      <p>DealBot63 следит за ценами в фоне, пока ты занимаешься своими делами.</p>
+    </div>
+    <div class="stats-grid reveal-stagger">
+      <div class="stat">
+        <span class="stat-num"><span data-counter="15420">0</span><span class="rub"> ₽</span></span>
+        <span class="stat-label">средняя экономия пользователя за месяц</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num" data-counter="1247">0</span>
+        <span class="stat-label">товаров под наблюдением прямо сейчас</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num"><span data-counter="38">0</span><span class="suffix">%</span></span>
+        <span class="stat-label">средняя скидка, которую ловит бот</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num"><span data-counter="60">0</span><span class="rub">с</span></span>
+        <span class="stat-label">интервал проверки цен на Premium-тарифе</span>
+      </div>
+    </div>
   </div>
-  <div class="stat reveal">
-    <div class="stat-num" data-target="18" data-suffix="%">0</div>
-    <div class="stat-label">средняя экономия</div>
-  </div>
-  <div class="stat reveal">
-    <div class="stat-num" data-target="24" data-suffix="/7">0</div>
-    <div class="stat-label">мониторинг, часы</div>
-  </div>
-  <div class="stat reveal">
-    <div class="stat-num" data-target="3" data-suffix=" сек">0</div>
-    <div class="stat-label">уведомление о скидке</div>
-  </div>
-</div>
+</section>
 
 <!-- FEATURES -->
 <section class="section" id="features">
-  <div class="section-title">
-    <h2 class="reveal">Возможности</h2>
-    <p class="reveal">Всё что нужно для умного шопинга</p>
-  </div>
-  <div class="features-grid">
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-chart"/></svg></span></div>
-      <h3>Отслеживание цен</h3>
-      <p>Добавьте любой товар с Ozon по ссылке — бот будет следить за ценой 24/7 и присылать уведомления.</p>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="mono-label">03 / Что умеет</span>
+      <h2>Три простых шага до скидки</h2>
+      <p>Никаких сложных настроек. Скидываешь ссылку — бот делает всё сам.</p>
     </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-bell"/></svg></span></div>
-      <h3>Уведомления о скидках</h3>
-      <p>Получайте push в Telegram, когда цена падает до нужного уровня. Настраивайте порог уведомления.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-trending-up"/></svg></span></div>
-      <h3>История цен</h3>
-      <p>График изменения цены за период. Видите, была ли цена ниже раньше, и когда выгоднее покупать.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-target"/></svg></span></div>
-      <h3>Целевая цена</h3>
-      <p>Установите цену, при которой хотите купить. Бот сообщит, когда товар подешевеет до нужной отметки.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-package"/></svg></span></div>
-      <h3>Список покупок</h3>
-      <p>Управляйте отслеживаемыми товарами в одном месте. Добавляйте, удаляйте, группируйте по категориям.</p>
-    </div>
-    <div class="feature-card reveal">
-      <div class="feature-icon"><span class="icon icon-lg"><svg><use href="#icon-zap"/></svg></span></div>
-      <h3>Молниеносная скорость</h3>
-      <p>Парсинг цен каждые 30 минут. Уведомление приходит за 3 секунды после обнаружения скидки.</p>
+    <div class="features-grid reveal-stagger">
+      <article class="feature-card">
+        <span class="feature-num">01</span>
+        <h3>Парсинг цены</h3>
+        <p>Кинь ссылку на товар с Ozon — бот вытащит название и текущую цену за секунды. Поддерживает короткие ссылки из приложения.</p>
+        <span class="feature-tag">/parse</span>
+      </article>
+      <article class="feature-card">
+        <span class="feature-num">02</span>
+        <h3>Отслеживание</h3>
+        <p>Бот запоминает товар и проверяет цену по расписанию. Бесплатно — каждые 3 часа, Premium — каждые 30 минут.</p>
+        <span class="feature-tag">/prices</span>
+      </article>
+      <article class="feature-card">
+        <span class="feature-num">03</span>
+        <h3>Уведомления</h3>
+        <p>Поставь цель — процент или сумму. Как цена упадёт до цели, бот пришлёт сообщение. Не пропустишь скидку.</p>
+        <span class="feature-tag">цель 15%</span>
+      </article>
     </div>
   </div>
 </section>
 
 <!-- HOW IT WORKS -->
-<section class="section" id="how">
-  <div class="section-title">
-    <h2 class="reveal">Как <span class="gold-text">это работает</span></h2>
-    <p class="reveal">Три простых шага</p>
-  </div>
-  <div class="steps">
-    <div class="step reveal">
-      <div class="step-num">1</div>
-      <h3>Откройте бота</h3>
-      <p>Нажмите «Запустить» в Telegram. Бот @DealBot63_bot откроется и попросит ссылку на товар.</p>
+<section class="section how" id="how">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="mono-label">04 / Механика</span>
+      <h2>От ссылки до уведомления</h2>
+      <p>Путь товара через бота — прозрачно, без чёрных ящиков.</p>
     </div>
-    <div class="step reveal">
-      <div class="step-num">2</div>
-      <h3>Добавьте товар</h3>
-      <p>Скопируйте ссылку на товар с Ozon, отправьте боту. Укажите целевую цену или порог уведомления.</p>
-    </div>
-    <div class="step reveal">
-      <div class="step-num">3</div>
-      <h3>Получайте уведомления</h3>
-      <p>Бот следит за ценой 24/7. Когда цена упадёт — придёт уведомление в Telegram с кнопкой «Купить».</p>
+    <div class="steps reveal-stagger">
+      <div class="step">
+        <span class="step-num">01</span>
+        <h3>Скидываешь ссылку</h3>
+        <p>Открываешь товар на Ozon, жмёшь «поделиться», выбираешь DealBot63. Или вставляешь ссылку командой /parse.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">02</span>
+        <h3>Бот парсит и запоминает</h3>
+        <p>CloakBrowser обходит защиту Ozon, вытаскивает цену и название. Товар попадает в твой список отслеживания.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">03</span>
+        <h3>Ставишь цель</h3>
+        <p>Пишешь «15%» — бот ждёт падения на 15%. Или сумму в рублях. Цель сохраняется, можно ставить несколько.</p>
+      </div>
+      <div class="step">
+        <span class="step-num">04</span>
+        <h3>Получаешь уведомление</h3>
+        <p>Как только цена пробивает цель — бот пишет тебе. Открываешь Ozon, покупаешь. Экономия зафиксирована.</p>
+      </div>
     </div>
   </div>
-</section>
-
-<!-- BOT PREVIEW -->
-<section class="preview-section">
-  <div class="section-title">
-    <h2 class="reveal">Вот так это <span class="gold-text">выглядит</span></h2>
-  </div>
-  <img src="assets/bot-preview.png" alt="Превью Telegram-бота DealBot63" class="reveal">
 </section>
 
 <!-- PRICING -->
 <section class="section" id="pricing">
-  <div class="section-title">
-    <h2 class="reveal">Тарифы</h2>
-    <p class="reveal">Начните бесплатно. Премиум — когда поймёте ценность.</p>
-  </div>
-  <div class="pricing-grid">
-    <div class="pricing-card reveal">
-      <div class="pricing-name">Бесплатный</div>
-      <div class="pricing-price">0<span class="currency"> ₽</span></div>
-      <div class="pricing-period">навсегда</div>
-      <ul class="pricing-features">
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> До 3 товаров</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка раз в час</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Базовые уведомления</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> История цен 7 дней</li>
-      </ul>
-      <a href="https://t.me/DealBot63_bot?start=landing_free" class="btn-pricing outline" target="_blank">Начать бесплатно</a>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="mono-label">05 / Тарифы</span>
+      <h2>Начни бесплатно</h2>
+      <p>Плати только когда товаров станет много. Free-тарифа хватает большинству.</p>
     </div>
-    <div class="pricing-card featured reveal">
-      <div class="pricing-name">Премиум</div>
-      <div class="pricing-price">149<span class="currency"> ₽</span></div>
-      <div class="pricing-period">в месяц</div>
-      <ul class="pricing-features">
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Безлимит товаров</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка каждые 30 мин</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Мгновенные уведомления</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> История цен 90 дней</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Графики и аналитика</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Целевая цена</li>
-      </ul>
-      <a href="https://t.me/DealBot63_bot?start=landing_premium" class="btn-pricing gold" target="_blank">Оформить Премиум</a>
-    </div>
-    <div class="pricing-card reveal">
-      <div class="pricing-name">Бизнес</div>
-      <div class="pricing-price">499<span class="currency"> ₽</span></div>
-      <div class="pricing-period">в месяц</div>
-      <ul class="pricing-features">
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Всё из Премиум</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Проверка каждые 10 мин</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> API доступ</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Массовый импорт</li>
-        <li><span class="icon icon-sm"><svg><use href="#icon-check"/></svg></span> Приоритетная поддержка</li>
-      </ul>
-      <a href="https://t.me/DealBot63_bot?start=landing_business" class="btn-pricing outline" target="_blank">Выбрать Бизнес</a>
+    <div class="pricing-grid reveal-stagger">
+      <article class="price-card">
+        <span class="price-tier">FREE</span>
+        <div class="price-amount">0 <span class="period">₽</span></div>
+        <p class="price-desc">Попробовать и понять, нужно ли</p>
+        <ul class="price-features">
+          <li>3 товара в отслеживании</li>
+          <li>Проверка каждые 3 часа</li>
+          <li>Уведомления о падении цены</li>
+          <li>Парсинг по ссылке</li>
+        </ul>
+        <a href="https://t.me/DealBot63_bot" class="price-cta">Начать бесплатно</a>
+      </article>
+      <article class="price-card price-card--featured">
+        <span class="price-tier">PREMIUM</span>
+        <div class="price-amount">100 <span class="period">⭐/мес</span></div>
+        <p class="price-desc">Для тех, кто следит за рынком</p>
+        <ul class="price-features">
+          <li>20 товаров в отслеживании</li>
+          <li>Проверка каждые 30 минут</li>
+          <li>Цели по цене и проценту</li>
+          <li>История изменений</li>
+        </ul>
+        <a href="https://t.me/DealBot63_bot" class="price-cta">Оформить Premium</a>
+      </article>
+      <article class="price-card">
+        <span class="price-tier">VIP</span>
+        <div class="price-amount">150 <span class="period">⭐/мес</span></div>
+        <p class="price-desc">Для перекупов и шопоголиков</p>
+        <ul class="price-features">
+          <li>100 товаров в отслеживании</li>
+          <li>Проверка каждые 10 минут</li>
+          <li>Приоритет в очереди парсинга</li>
+          <li>Все возможности Premium</li>
+        </ul>
+        <a href="https://t.me/DealBot63_bot" class="price-cta">Стать VIP</a>
+      </article>
     </div>
   </div>
 </section>
 
-<!-- CTA FINAL -->
-<section class="cta-final">
-  <div class="bg-orbs" style="position:absolute;inset:0;z-index:-1;"></div>
-  <h2 class="reveal">Готовы <span class="gold-text">экономить</span>?</h2>
-  <p class="reveal">Запустите бота за 10 секунд. Бесплатно.</p>
-  <a href="https://t.me/DealBot63_bot?start=landing" class="btn-primary reveal" target="_blank">
-    <span class="icon"><svg><use href="#icon-rocket"/></svg></span>
-    Открыть в Telegram
-  </a>
+<!-- TESTIMONIAL -->
+<section class="section testimonial">
+  <div class="wrap">
+    <span class="mono-label reveal">06 / Отзыв</span>
+    <blockquote class="quote reveal">
+      «Следил за коляской для дочки три недели. Бот написал в<span class="accent"> два часа ночи</span> — цена упала на 18%. Купил. Экономия — семь тысяч.»
+    </blockquote>
+    <div class="quote-author reveal">
+      <div class="quote-avatar">А</div>
+      <div class="quote-meta">
+        <strong>Андрей, Сызрань</strong>
+        <span>пользователь DealBot63</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="section cta-final">
+  <div class="wrap">
+    <h2 class="reveal">Перестань проверять Ozon руками</h2>
+    <p class="reveal">Бот сделает это за тебя. Бесплатно.</p>
+    <a href="https://t.me/DealBot63_bot" class="btn-primary reveal">Открыть @DealBot63_bot →</a>
+  </div>
 </section>
 
 <!-- FOOTER -->
-<footer>
-  <p>DealBot63 · Мониторинг цен Ozon · <a href="https://t.me/DealBot63_bot" target="_blank">Открыть в Telegram</a></p>
-  <p style="margin-top:8px;">Сделано с любовью для умных покупателей</p>
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="brand" style="color:#fff">
+          <span class="brand-dot" aria-hidden="true"></span>
+          <span>DealBot63</span>
+        </a>
+        <p>Telegram-бот для отслеживания цен на Ozon. Экономь осознанно — пусть бот следит, ты живи.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Продукт</h4>
+        <ul>
+          <li><a href="#how">Как работает</a></li>
+          <li><a href="#features">Возможности</a></li>
+          <li><a href="#pricing">Тарифы</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Помощь</h4>
+        <ul>
+          <li><a href="https://t.me/DealBot63_bot">В бот</a></li>
+          <li><a href="#faq">Вопросы</a></li>
+          <li><a href="#">Поддержка</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Правое</h4>
+        <ul>
+          <li><a href="#">Условия</a></li>
+          <li><a href="#">Конфиденциальность</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 DealBot63 · ЦенаПад</p>
+      <p>Сделано с заботой о кошельке</p>
+    </div>
+  </div>
 </footer>
 
 <script>
-  // ===== NAV SCROLL =====
-  const nav = document.getElementById('nav');
-  window.addEventListener('scroll', () => {
-    nav.classList.toggle('scrolled', window.scrollY > 20);
-  });
-
-  // ===== PARTICLES =====
-  const particlesContainer = document.getElementById('particles');
-  for (let i = 0; i < 40; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = Math.random() * 10 + 's';
-    p.style.setProperty('--drift', (Math.random() * 120 - 60) + 'px');
-    const size = 2 + Math.random() * 3;
-    p.style.width = p.style.height = size + 'px';
-    particlesContainer.appendChild(p);
+// === MORPH TEXT в hero ===
+(function(){
+  const words = ['экономишь','покупаешь','успеваешь','не переплачиваешь'];
+  let i = 0;
+  const el = document.getElementById('morph');
+  if(!el) return;
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function type(word, cb){
+    let j=0;
+    const t = setInterval(()=>{
+      el.textContent = word.slice(0,++j);
+      if(j>=word.length){clearInterval(t);setTimeout(cb,1800);}
+    },60);
   }
+  function erase(cb){
+    let j = el.textContent.length;
+    const t = setInterval(()=>{
+      el.textContent = el.textContent.slice(0,--j);
+      if(j<=0){clearInterval(t);cb();}
+    },30);
+  }
+  function loop(){
+    type(words[i%words.length], ()=>erase(()=>{i++;loop();}));
+  }
+  setTimeout(loop, 2000);
+})();
 
-  // ===== SCROLL REVEAL =====
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-  // ===== COUNTERS =====
-  const counters = document.querySelectorAll('.stat-num');
-  const counterObserver = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        const el = e.target;
-        const target = parseInt(el.dataset.target);
-        const suffix = el.dataset.suffix || '';
-        let current = 0;
-        const step = target / 50;
-        const timer = setInterval(() => {
-          current += step;
-          if (current >= target) { current = target; clearInterval(timer); }
-          el.textContent = Math.floor(current) + suffix;
-        }, 30);
-        counterObserver.unobserve(el);
+// === SCROLL REVEAL ===
+(function(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        e.target.classList.add('in');
+        obs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.5 });
-  counters.forEach(c => counterObserver.observe(c));
+  },{threshold:0.15, rootMargin:'0px 0px -50px 0px'});
+  document.querySelectorAll('.reveal,.reveal-stagger').forEach(el=>obs.observe(el));
+})();
 
-  // ===== GLOW CURSOR =====
-  const glow = document.getElementById('glowCursor');
-  document.addEventListener('mousemove', (e) => {
-    glow.style.left = e.clientX + 'px';
-    glow.style.top = e.clientY + 'px';
-  });
-  document.addEventListener('mouseleave', () => { glow.style.opacity = '0'; });
-  document.addEventListener('mouseenter', () => { glow.style.opacity = '1'; });
-
-  // ===== FEATURE CARD MOUSE TRACKING =====
-  document.querySelectorAll('.feature-card').forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = ((e.clientX - rect.left) / rect.width) * 100;
-      const y = ((e.clientY - rect.top) / rect.height) * 100;
-      card.style.setProperty('--mx', x + '%');
-      card.style.setProperty('--my', y + '%');
+// === COUNTER ANIMATION ===
+(function(){
+  const nums = document.querySelectorAll('[data-counter]');
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting) return;
+      const el = e.target;
+      const target = parseInt(el.dataset.counter,10);
+      const dur = 1500;
+      const start = performance.now();
+      function tick(now){
+        const p = Math.min((now-start)/dur,1);
+        const eased = 1-Math.pow(1-p,3);
+        const val = Math.floor(target*eased);
+        el.textContent = val.toLocaleString('ru-RU');
+        if(p<1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+      obs.unobserve(el);
     });
-  });
-</script>
+  },{threshold:0.5});
+  nums.forEach(n=>obs.observe(n));
+})();
 
+// === BURGER (mobile) ===
+(function(){
+  const btn = document.querySelector('.nav-burger');
+  const links = document.querySelector('.nav-links');
+  if(!btn) return;
+  btn.addEventListener('click',()=>{
+    if(links.style.display==='flex'){links.style.display='';}
+    else{links.style.display='flex';links.style.position='absolute';links.style.top='100%';links.style.left='0';links.style.right='0';links.style.background='#fff';links.style.flexDirection='column';links.style.padding='16px';links.style.borderBottom='1px solid #ededed';}
+  });
+})();
+</script>
 </body>
 </html>
