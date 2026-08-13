@@ -29,7 +29,8 @@
   --color-smoke: #b9b9b9;      /* borders, disabled */
   --color-ash: #d6d6d6;        /* subtle borders */
   --color-frost: #ededed;      /* hover bg, row separators */
-  --color-canvas: #ffffff;     /* page bg, cards */
+  --color-canvas: #faf9f7;     /* page bg, cards — тёплый off-white, не режет глаза */
+  --color-canvas-pure: #ffffff; /* cards elevated */
 
   /* Типографика */
   --font-display: 'Inter', 'GT Walsheim', 'Söhne', system-ui, sans-serif;
@@ -201,7 +202,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{
 .hero h1 .morph{
   color:var(--color-deal);
   display:inline-block;
-  min-width:9ch;
+  min-width:7ch;
   position:relative;
 }
 .hero-sub{
@@ -828,7 +829,7 @@ a:focus-visible,button:focus-visible,input:focus-visible{
 <script>
 // === MORPH TEXT в hero ===
 (function(){
-  const words = ['экономишь','покупаешь','успеваешь','не переплачиваешь'];
+  const words = ['экономишь','покупаешь','выбираешь','бережёшь'];
   let i = 0;
   const el = document.getElementById('morph');
   if(!el) return;
